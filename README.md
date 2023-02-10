@@ -36,6 +36,17 @@ Web Scraping is a technique that consists of extracting information from web pag
 - 8.[References](#8-references)
 ---
 
+## Structure of the repository
+
+The repository contains the next files and folders:
+
+- `web-scraping-on-amazon-with-selenium-python.ipynb`: notebook from kaggle where I ran the code, so you can check it out in the link below to see the output of each line of code, the notebook is also in the repository :
+
+  https://www.kaggle.com/code/jesusacunamorillo/web-scraping-on-amazon-with-selenium-python/notebook
+  
+- `data`: directory where the the data in csv format is stored, in this case for the `keyboard product`
+  
+
 ## 1. Basic notions
 
 The HTML5 standar includes HTML, CSS and JavaScript, but for web scraping I only used part of HTML programation, essentially the use of tags.
