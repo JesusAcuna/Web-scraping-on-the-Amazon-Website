@@ -310,7 +310,7 @@ At point 6.[Data article](#6-data-article) I explained what is the information i
                   
 ### 5.5. Table2 information
 
-The code is similar to the second part of the point 8. Table1 information, but this is anohter table located below of the first table.
+The code is similar to the second part of the point 5.4.[Table1 information](#54-table1-information), but this is anohter table located below of the first table.
 
     def Table2():
         FeatureTable2List=[]
@@ -330,7 +330,7 @@ The code is similar to the second part of the point 8. Table1 information, but t
               
 ### 5.6. Table3 information
 
-The code is similar to the second part of the point 8. Table1 information, but this is anohter table located by the second table.
+The code is similar to the second part of the point 5.4.[Table1 information](#54-table1-information), but this is anohter table located by the second table.
 
     def Table3():
         FeatureTable3List=[]
@@ -361,15 +361,15 @@ In this part I'm going to extract information such as title, price and table inf
 1. First part
 
 * In the first **for** loop, set the number of pages, and skip the first page since we are on the first page.
-* Then I got the number of articles with the function "**NumberofArticles()**". See point **5. Number or articles**
+* Then I got the number of articles with the function "**NumberofArticles()**". See point 5.1.[Number of articles](#51-number-of-articles) 
 
 2. Second part
 
 * The **while** loop will move through all products on a specific page
 * All the products on a specific page start with a XPATH: //[@id="search"]/div[1]/div[1]/div/span[3]/div[2]/div[2+i], also there are two XPATHS that the products have.
-* Then I got the article title with the function "**Title()**". See point **6. Article title**
-* Then I got the article price with the function "**Price()**". See point **7. Article price**
-* Then I got the Table1 information with the function "**Table1()**". See point **8. Table1 information**, and so on with the Table2 and Table3
+* Then I got the article title with the function "**Title()**". See point 5.2.[Article title](#52-article-title)
+* Then I got the article price with the function "**Price()**". See point 5.3.[Article price](#53-article-price)
+* Then I got the Table1 information with the function "**Table1()**". See point 5.4.[Table1 information](#54-table1-information), and so on with the Table2 and Table3
 
 3. Third part
 
