@@ -15,8 +15,14 @@ Web Scraping is a technique that consists of extracting information from web pag
   - 1.1.[Locating elements](#11-locating-elements) 
   - 1.2.[Finding elements by ID](#12-finding-elements-by-id) 
   - 1.3.[Finding elements by XPATH](#13-finding-elements-by-xpath) 
-- 2.[Objective](#2-objective)
-- 3.[Data description](#3-data-description)
+- 2.[Starting](#2-starting)
+  - 2.1.[Import selenium library and chrome driver](#21-import-selenium-library-and-chrome-driver)  
+  - 2.2.[Create a driver with options](#22-create-a-driver-with-options) 
+- 3.[Initializing search](#3-initializig-search)
+  - 3.1.[Enter the URL](#31-enter-the-url) 
+  - 3.2.[Create Explicit Waits to locate the search bar](#32-create-explicit-waits-to-locate-the-search-bar)
+  
+
 - 4.[Setting up the virtual environment](#4-setting-up-the-virtual-environment)
 - 5.[Importing data](#5-importing-data)
 - 6.[Notebook](#6-notebook)
@@ -74,6 +80,68 @@ To find the XPath just right click on the HTML code and copy the XPath,and the m
 <p align="center">
   <img src="https://github.com/JesusAcuna/Web-scraping-on-the-Amazon-Website/blob/main/images/image_2.jpg">
 </p>
+
+Reference: https://selenium-python.readthedocs.io/locating-elements.html
+
+## 2. Starting
+
+To begin first import the selenium and chrome driver libraries and create the driver object.
+
+### 2.1. Import selenium library and chrome driver
+
+    !pip install selenium                                 # Install selenium
+    !apt-get update                                       # To update ubuntu to correctly run apt install
+    !apt install chromium-chromedriver -y                 # Install chrome driver
+    !cp /usr/lib/chromium-browser/chromedriver /usr/bin   # Adding the driver path 
+
+    import sys                                                    
+    sys.path.insert(0,'/usr/lib/chromium-browser/chromedriver')
+
+### 2.2. Create a driver with options
+
+
+    from selenium import webdriver                                  # Import webdriver
+
+    chrome_options = webdriver.ChromeOptions()                      # Create object ChromeOptions()
+    chrome_options.add_argument('--headless')           
+    chrome_options.add_argument('--no-sandbox')                             
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    driver= webdriver.Chrome('chromedriver',options=chrome_options) # Create driver
+    
+In Spyder IDE this first part is:
+
+    !pip install selenium
+    from selenium import webdriver
+    from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.chrome.service import Service
+    chrome_options = Options()
+    chrome_options.add_experimental_option("detach", True)
+    driver=webdriver.Chrome(service=Service(ChromeDriverManager().install()),options=chrome_options)
+
+Then the rest of the below code is the same
+
+## 3. Initializing search
+
+In this part enter the URL, create the explicit waits, that is a better tool than the time.sleep(s), and enter the product.
+
+### 3.1. Enter the URL
+
+    url="http://amazon.com"        # Page URL
+    driver.get(url)                # Go to that URL
+    
+### 3.2. Create Explicit Waits to locate the search bar
+
+<p align="justify">
+An explicit wait is a code you define to wait for a certain condition to occur before proceeding further in the code. The extreme case of this is time.sleep(), which sets the condition to an exact time period to wait.    
+</p>
+
+Reference: https://selenium-python.readthedocs.io/waits.html
+
+- The first condition is "presence_of_element_located" that checks that element is on the page source.
+
+- The page sometimes gives you two IDs, that's why I decided to try with two ID's: <b>'twotabsearchtextbox', 'nav-bb-search'</b>
+
+- This ExplicitWait waits by 3 seconds, in this case, to find that element by ID before the TimeException occurs, and if this is executed just refresh the page until the condition is fulfilled
 
 ## 10. References
 
