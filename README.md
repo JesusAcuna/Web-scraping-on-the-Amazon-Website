@@ -1,3 +1,4 @@
+Web Scraping with Selenium [Python]
 <p align="center">
   <img src="https://selenium-python.readthedocs.io/_static/logo.png">
 </p>
