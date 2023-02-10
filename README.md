@@ -54,6 +54,11 @@ In the red box image you'll see id="twotabsearchtextbox", and the method using t
 <b>find_element_by_id("twotabsearchtextbox") or find_element(By.ID,"twotabsearchtextbox")</b>
 </>
 
+<p align="center">
+  <img src="https://github.com/JesusAcuna/Web-scraping-on-the-Amazon-Website/blob/main/images/image_1.jpg">
+</p>
+
+
 ## 10. References
 
   - Web
