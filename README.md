@@ -44,7 +44,7 @@ The repository contains the next files and folders:
 
   https://www.kaggle.com/code/jesusacunamorillo/web-scraping-on-amazon-with-selenium-python/notebook
   
-- `data`: directory where the the data in csv format is stored, in this case for the `keyboard product`
+- `data`: directory where the the data in csv format is stored, in this case for the 'keyboard' product.
   
 
 ## 1. Basic notions
@@ -485,7 +485,11 @@ Then I started filling the lists, if a product possessed that feature it was pla
   - Web
   
       https://selenium-python.readthedocs.io/
+      
+  - Kaggle notebook
   
+      https://www.kaggle.com/code/jesusacunamorillo/web-scraping-on-amazon-with-selenium-python/notebook
+      
   - Youtube
   
       Tech Path
