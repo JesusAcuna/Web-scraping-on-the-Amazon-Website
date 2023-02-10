@@ -14,7 +14,7 @@ Web Scraping is a technique that consists of extracting information from web pag
 - 1.[Basic notions](#1-basic-notions)
   - 1.1.[Locating elements](#11-locating-elements) 
   - 1.2.[Finding elements by ID](#12-finding-elements-by-id) 
-  - 1.3.[Finding elements by XPATH](#13-finding-elements-by-XPATH) 
+  - 1.3.[Finding elements by XPATH](#13-finding-elements-by-xpath) 
 - 2.[Objective](#2-objective)
 - 3.[Data description](#3-data-description)
 - 4.[Setting up the virtual environment](#4-setting-up-the-virtual-environment)
@@ -58,6 +58,22 @@ In the red box image you'll see id="twotabsearchtextbox", and the method using t
   <img src="https://github.com/JesusAcuna/Web-scraping-on-the-Amazon-Website/blob/main/images/image_1.jpg">
 </p>
 
+### 1.3. Finding elements by XPATH
+
+<p align="justify">
+XPath is the language used for locating nodes in an XML document. One of the main reasons for using XPath is when you don’t have a suitable id or name attribute for the element you wish to locate. You can use XPath to either locate the element in absolute terms (not advised), or relative to an element that does have an id or name attribute.
+</p>
+
+To find the XPath just right click on the HTML code and copy the XPath,and the method using the locations elements is:
+
+
+<p align="center">  
+<b>find_element_by_xpath(//*[@id="twotabsearchtextbox"]) or find_element(By.XPATH,//*[@id="twotabsearchtextbox"])</b>
+</>
+
+<p align="center">
+  <img src="https://github.com/JesusAcuna/Web-scraping-on-the-Amazon-Website/blob/main/images/image_2.jpg">
+</p>
 
 ## 10. References
 
