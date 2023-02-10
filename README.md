@@ -1,6 +1,6 @@
 # WebScrapping
 
-## Referencias
+## References
   Web:
   
   https://selenium-python.readthedocs.io/
