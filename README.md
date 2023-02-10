@@ -33,9 +33,7 @@ Web Scraping is a technique that consists of extracting information from web pag
   - 5.6.[Table3 information](#56-table3-information)
 - 6.[Data article](#6-data-article)
 - 7.[Get Dataframe](#7-get-dataframe)
-
-
-- 10.[References](#10-references)
+- 8.[References](#8-references)
 ---
 
 ## 1. Basic notions
