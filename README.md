@@ -184,8 +184,6 @@ Now we are on the main page of the product
 
 ### 4.1. Finding the number of pages
 
-**3.1. Finding the number of pages**
-
 - To find the number of pages I used a ExplicitWait with the condition "presence_of_element_located" by XPATH
 - The method 'WebDriverWait(driver,3).until(EC.presence_of_element_located((By.XPATH,"..."))).**text**' gets the text included inside the HTML code
 - If the exception occurs a message will be printed and the page will be refresed
