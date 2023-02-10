@@ -21,18 +21,23 @@ Web Scraping is a technique that consists of extracting information from web pag
 - 3.[Initializing search](#3-initializig-search)
   - 3.1.[Enter the URL](#31-enter-the-url) 
   - 3.2.[Create Explicit Waits to locate the search bar](#32-create-explicit-waits-to-locate-the-search-bar)
-  
+  - 3.3.[Enter the product](#33-enter-the-product) 
+- 4.[Number of pages](#4-number-of-pages) 
+  - 4.1.[Finding the number of pages](#41-finding-the-number-of-pages) 
+- 5.[Functions](#5-functions)
+  - 5.1.[Number of articles](#51-number-of-articles) 
+  - 5.2.[Article title](#52-article-title)
+  - 5.3.[Article price](#53-article-price)
+  - 5.4.[Table1 information](#54-table1-information)
+  - 5.5.[Table2 information](#55-table2-information)
+  - 5.6.[Table3 information](#56-table3-information)
+- 6.[Data article](#6-data-article)
+- 7.[Get Dataframe](#7-get-dataframe)
 
-- 4.[Setting up the virtual environment](#4-setting-up-the-virtual-environment)
-- 5.[Importing data](#5-importing-data)
-- 6.[Notebook](#6-notebook)
-  - 6.1.[Exploratory Data Analysis (EDA)](#61-exploratory-data-analysis-eda)
-  - 6.2.[Model selection and parameter tuning](#62-model-selection-and-parameter-tuning)
-- 7.[Instructions on how to run the project](#7-instructions-on-how-to-run-the-project)
-- 8.[Locally deployment](#8-locally-deployment)
-- 9.[Google Cloud deployment (GCP)](#9-google-cloud-deployment-gcp)
+
 - 10.[References](#10-references)
 ---
+
 ## 1. Basic notions
 
 The HTML5 standar includes HTML, CSS and JavaScript, but for web scraping I only used part of HTML programation, essentially the use of tags.
@@ -142,6 +147,207 @@ Reference: https://selenium-python.readthedocs.io/waits.html
 - The page sometimes gives you two IDs, that's why I decided to try with two ID's: <b>'twotabsearchtextbox', 'nav-bb-search'</b>
 
 - This ExplicitWait waits by 3 seconds, in this case, to find that element by ID before the TimeException occurs, and if this is executed just refresh the page until the condition is fulfilled
+
+      #These 3 methods are for ExplicitWaits
+      from selenium.webdriver.common.by import By
+      from selenium.webdriver.support.ui import WebDriverWait
+      from selenium.webdriver.support import expected_conditions as EC
+
+      #Exception library
+      from selenium.common.exceptions import TimeoutException
+
+      while(True):
+          try: 
+              search=WebDriverWait(driver,3).until(EC.presence_of_element_located((By.ID, "twotabsearchtextbox")))
+          except TimeoutException:
+              try:
+                  search=WebDriverWait(driver,3).until(EC.presence_of_element_located((By.ID, "nav-bb-search")))
+              except TimeoutException:       #Exception when the ExplicitWait condition occurs
+                  driver.refresh()
+                  continue
+              else:
+                  break
+          else:
+              break
+            
+### 3.3. Enter the product
+
+This code below makes: first type the product in the search bar and press ENTER
+
+    from selenium.webdriver.common.keys import Keys       #Import the Keys object
+
+    articlename="keyboard"                    
+    search.send_keys(articlename,Keys.ENTER)  
+    
+Now we are on the main page of the product
+
+
+## 4. Number of pages
+
+### 4.1. Finding the number of pages
+
+- To find the number of pages I used a ExplicitWait with the condition "presence_of_element_located" by XPATH
+- If the exception occurs a message will be printed and the page will be refresed
+
+      while(True):
+          try: 
+              numberofpages=WebDriverWait(driver,3).until(EC.presence_of_element_located((By.XPATH, "//*[@class='s-pagination-item s-pagination-disabled']"))).text
+          except TimeoutException: 
+              print("The total number of pages was not found.")
+              driver.refresh()
+              continue
+          else:
+              break
+      print("Total number of pages: ",numberofpages)
+    
+## 5. Functions
+
+### 5.1. Number of articles
+
+This is going to be a function, since each page has a different number of products or articles.
+
+- To find the number of articles I used a ExplicitWait with the condition "presence_of_all_elements_located" by XPATH
+- To find out the products path, that contains several tags, I used two tags "@data-cel-widget","@data-asin" and their start values "search_result_", "B0" respectively as a filter.
+- If the exception occurs a message will be printed and the page will be refresed.
+- "elements" is going to give me all the products XPATH on the page even the advertising products and others, so to avoid the latter I'm going to count all the products that have the tag @class='a-size-medium a-color-base a-text-normal' .
+
+      def NumberofArticles():    
+          while(True):
+              try: 
+                  elements=WebDriverWait(driver,5).until(EC.presence_of_all_elements_located((By.XPATH,'//*[contains(@data-cel-widget,"search_result_") and contains(@data-asin,"B0")]')))
+              except TimeoutException: 
+                  print("No elements found")
+                  driver.refresh()
+                  continue
+              else:
+                  break      
+          print("Items found with the filter: ",len(elements))
+          # Second part
+          numberofarticles=0        
+          for i in elements:
+              try:
+                  i.find_element(By.XPATH,".//span[@class = 'a-size-medium a-color-base a-text-normal']").text
+              except:
+                  continue
+              else:
+                  numberofarticles+=1
+          print("Total number of articles: ",numberofarticles)
+          print("***************************************************************")
+          return numberofarticles
+          
+### 5.2. Article title
+
+- To find the article title I used a ExplicitWait with the condition "presence_of_element_located" by XPATH.
+- If exists return the article title, if not '', and append it to TitleList
+
+      def Title():
+          try: 
+              title=WebDriverWait(driver,3).until(EC.presence_of_element_located((By.XPATH, '//*[@id="productTitle"]'))).text
+          except TimeoutException: 
+              return ''
+          else:
+              return title
+
+### 5.3. Article price
+
+- To find the article price I used a ExplicitWait with the condition "presence_of_element_located" by XPATH. There are two XPATHS where article prices appear
+- If exists return the article price, if not '', and append it to PriceList
+
+      def Price():
+          try: 
+              price=WebDriverWait(driver,3).until(EC.presence_of_element_located((By.XPATH, '//*[@id="corePrice_desktop"]/div/table/tbody/tr/td[2]/span[1]/span[2]'))).text
+          except TimeoutException: 
+              try: 
+                  price=WebDriverWait(driver,3).until(EC.presence_of_element_located((By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]/div[1]/span/span[2]/span[2]'))).text
+              except TimeoutException: 
+                  return ''
+              else:
+                  return price
+          else:
+              return price
+
+### 5.4. Table1 information
+
+At point 6.[Data article](#6-data-article) I explained what is the information in the table.
+
+- To find out if the article has a expander prompt I used a ExplicitWait with the condition "presence_of_element_located" by XPATH. If exists click on it and if not return nothing.
+- Then to find the length of that table I used a find_elements by XPATH, with the length I returned the features and values of the table.
+
+      def Table1():
+          FeatureTable1List=[]
+          ValueTable1List=[]
+          print("***************************************************************")
+          try:
+              WebDriverWait(driver,5).until(EC.presence_of_element_located((By.XPATH,'//*[@id="productOverview_feature_div"]')))
+          except NoSuchElementException:
+              print("Table1: Primary path not found")
+              return [],[]       
+          else:
+              #Second part
+              try:
+                  WebDriverWait(driver,5).until(EC.presence_of_element_located((By.XPATH,'//*[@id="poExpander"]/div[1]/div/table/tbody')))
+              except TimeoutException:
+                  table1rows=len(driver.find_elements(By.XPATH,'//*[@id="productOverview_feature_div"]/div/table/tbody/tr'))
+                  print("Table1rows with the first Path: ",table1rows)    
+                  for i in range(table1rows):
+                      FeatureTable1List.append(driver.find_element(By.XPATH,'//*[@id="productOverview_feature_div"]/div/table/tbody/tr['+str(i+1)+']/td[1]').text)
+                      ValueTable1List.append(driver.find_element(By.XPATH,'//*[@id="productOverview_feature_div"]/div/table/tbody/tr['+str(i+1)+']/td[2]').text)
+                  return FeatureTable1List,ValueTable1List       
+              else:
+                  #Click on See more
+                  WebDriverWait(driver,5).until(EC.element_to_be_clickable((By.XPATH,'//*[@id="poToggleButton"]/a/span'))).click()
+                  table1rows=len(driver.find_elements(By.XPATH,'//*[@id="poExpander"]/div[1]/div/table/tbody/tr'))
+                  print("Table1rows with the second Path: ",table1rows)    
+                  for i in range(table1rows):
+                      FeatureTable1List.append(driver.find_element(By.XPATH,'//*[@id="poExpander"]/div[1]/div/table/tbody/tr['+str(i+1)+']/td[1]').text)
+                      ValueTable1List.append(driver.find_element(By.XPATH,'//*[@id="poExpander"]/div[1]/div/table/tbody/tr['+str(i+1)+']/td[2]').text)                
+                  return FeatureTable1List,ValueTable1List 
+                  
+### 5.5. Table2 information
+
+The code is similar to the second part of the point 8. Table1 information, but this is anohter table located below of the first table.
+
+      def Table2():
+          FeatureTable2List=[]
+          ValueTable2List=[]
+          try:
+              WebDriverWait(driver,5).until(EC.presence_of_element_located((By.XPATH,'//*[@id="productDetails_techSpec_section_1"]/tbody/tr')))
+          except TimeoutException:
+              print("\nTable2: Primary path not found")
+              return [],[]
+          else:
+              table2rows=len(driver.find_elements(By.XPATH,'//*[@id="productDetails_techSpec_section_1"]/tbody/tr'))
+              print("\nTable2rows: ",table2rows)
+              for i in range(table2rows):
+                  FeatureTable2List.append(driver.find_element(By.XPATH,'//*[@id="productDetails_techSpec_section_1"]/tbody/tr['+str(i+1)+']/th').text)
+                  ValueTable2List.append(driver.find_element(By.XPATH,'//*[@id="productDetails_techSpec_section_1"]/tbody/tr['+str(i+1)+']/td').text)
+              return FeatureTable2List,ValueTable2List
+              
+### 5.6. Table3 information
+
+The code is similar to the second part of the point 8. Table1 information, but this is anohter table located by the second table.
+
+      def Table3():
+          FeatureTable3List=[]
+          ValueTable3List=[]
+          try:
+              WebDriverWait(driver,5).until(EC.presence_of_element_located((By.XPATH,'//*[@id="productDetails_detailBullets_sections1"]/tbody/tr')))
+          except TimeoutException:
+               print("\nTable3: Primary path not found")
+               return [],[]
+          else:
+              table3rows=len(driver.find_elements(By.XPATH,'//*[@id="productDetails_detailBullets_sections1"]/tbody/tr'))
+              print("\nTable3rows: ",table3rows)
+              for i in range(table3rows):
+                  FeatureTable3List.append(driver.find_element(By.XPATH,'//*[@id="productDetails_detailBullets_sections1"]/tbody/tr['+str(i+1)+']/th').text)
+                  ValueTable3List.append(driver.find_element(By.XPATH,'//*[@id="productDetails_detailBullets_sections1"]/tbody/tr['+str(i+1)+']/td').text)
+              return FeatureTable3List,ValueTable3List
+
+## 6. Data Article
+
+<p align="justify">
+In this part I'm going to extract information such as title, price and table information from three tables are on the page of a product or article. The picture below is the first Table, and sometimes there is a expander prompt, it's necessary click on that expander to reveal the information.
+</p>
 
 ## 10. References
 
