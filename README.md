@@ -184,8 +184,12 @@ Now we are on the main page of the product
 
 ### 4.1. Finding the number of pages
 
+**3.1. Finding the number of pages**
+
 - To find the number of pages I used a ExplicitWait with the condition "presence_of_element_located" by XPATH
+- The method 'WebDriverWait(driver,3).until(EC.presence_of_element_located((By.XPATH,"..."))).**text**' gets the text included inside the HTML code
 - If the exception occurs a message will be printed and the page will be refresed
+
 
       while(True):
           try: 
@@ -204,9 +208,14 @@ Now we are on the main page of the product
 
 This is going to be a function, since each page has a different number of products or articles.
 
+1. First part
+
 - To find the number of articles I used a ExplicitWait with the condition "presence_of_all_elements_located" by XPATH
 - To find out the products path, that contains several tags, I used two tags "@data-cel-widget","@data-asin" and their start values "search_result_", "B0" respectively as a filter.
 - If the exception occurs a message will be printed and the page will be refresed.
+
+2. Second part
+
 - "elements" is going to give me all the products XPATH on the page even the advertising products and others, so to avoid the latter I'm going to count all the products that have the tag @class='a-size-medium a-color-base a-text-normal' .
 
       def NumberofArticles():    
@@ -277,7 +286,7 @@ At point 6.[Data article](#6-data-article) I explained what is the information i
           print("***************************************************************")
           try:
               WebDriverWait(driver,5).until(EC.presence_of_element_located((By.XPATH,'//*[@id="productOverview_feature_div"]')))
-          except NoSuchElementException:
+          except TimeoutException:
               print("Table1: Primary path not found")
               return [],[]       
           else:
@@ -305,41 +314,41 @@ At point 6.[Data article](#6-data-article) I explained what is the information i
 
 The code is similar to the second part of the point 8. Table1 information, but this is anohter table located below of the first table.
 
-      def Table2():
-          FeatureTable2List=[]
-          ValueTable2List=[]
-          try:
-              WebDriverWait(driver,5).until(EC.presence_of_element_located((By.XPATH,'//*[@id="productDetails_techSpec_section_1"]/tbody/tr')))
-          except TimeoutException:
-              print("\nTable2: Primary path not found")
-              return [],[]
-          else:
-              table2rows=len(driver.find_elements(By.XPATH,'//*[@id="productDetails_techSpec_section_1"]/tbody/tr'))
-              print("\nTable2rows: ",table2rows)
-              for i in range(table2rows):
-                  FeatureTable2List.append(driver.find_element(By.XPATH,'//*[@id="productDetails_techSpec_section_1"]/tbody/tr['+str(i+1)+']/th').text)
-                  ValueTable2List.append(driver.find_element(By.XPATH,'//*[@id="productDetails_techSpec_section_1"]/tbody/tr['+str(i+1)+']/td').text)
-              return FeatureTable2List,ValueTable2List
+    def Table2():
+        FeatureTable2List=[]
+        ValueTable2List=[]
+        try:
+            WebDriverWait(driver,5).until(EC.presence_of_element_located((By.XPATH,'//*[@id="productDetails_techSpec_section_1"]/tbody/tr')))
+        except TimeoutException:
+            print("\nTable2: Primary path not found")
+            return [],[]
+        else:
+            table2rows=len(driver.find_elements(By.XPATH,'//*[@id="productDetails_techSpec_section_1"]/tbody/tr'))
+            print("\nTable2rows: ",table2rows)
+            for i in range(table2rows):
+                FeatureTable2List.append(driver.find_element(By.XPATH,'//*[@id="productDetails_techSpec_section_1"]/tbody/tr['+str(i+1)+']/th').text)
+                ValueTable2List.append(driver.find_element(By.XPATH,'//*[@id="productDetails_techSpec_section_1"]/tbody/tr['+str(i+1)+']/td').text)
+            return FeatureTable2List,ValueTable2List
               
 ### 5.6. Table3 information
 
 The code is similar to the second part of the point 8. Table1 information, but this is anohter table located by the second table.
 
-      def Table3():
-          FeatureTable3List=[]
-          ValueTable3List=[]
-          try:
-              WebDriverWait(driver,5).until(EC.presence_of_element_located((By.XPATH,'//*[@id="productDetails_detailBullets_sections1"]/tbody/tr')))
-          except TimeoutException:
-               print("\nTable3: Primary path not found")
-               return [],[]
-          else:
-              table3rows=len(driver.find_elements(By.XPATH,'//*[@id="productDetails_detailBullets_sections1"]/tbody/tr'))
-              print("\nTable3rows: ",table3rows)
-              for i in range(table3rows):
-                  FeatureTable3List.append(driver.find_element(By.XPATH,'//*[@id="productDetails_detailBullets_sections1"]/tbody/tr['+str(i+1)+']/th').text)
-                  ValueTable3List.append(driver.find_element(By.XPATH,'//*[@id="productDetails_detailBullets_sections1"]/tbody/tr['+str(i+1)+']/td').text)
-              return FeatureTable3List,ValueTable3List
+    def Table3():
+        FeatureTable3List=[]
+        ValueTable3List=[]
+        try:
+            WebDriverWait(driver,5).until(EC.presence_of_element_located((By.XPATH,'//*[@id="productDetails_detailBullets_sections1"]/tbody/tr')))
+        except TimeoutException:
+             print("\nTable3: Primary path not found")
+             return [],[]
+        else:
+            table3rows=len(driver.find_elements(By.XPATH,'//*[@id="productDetails_detailBullets_sections1"]/tbody/tr'))
+            print("\nTable3rows: ",table3rows)
+            for i in range(table3rows):
+                FeatureTable3List.append(driver.find_element(By.XPATH,'//*[@id="productDetails_detailBullets_sections1"]/tbody/tr['+str(i+1)+']/th').text)
+                ValueTable3List.append(driver.find_element(By.XPATH,'//*[@id="productDetails_detailBullets_sections1"]/tbody/tr['+str(i+1)+']/td').text)
+            return FeatureTable3List,ValueTable3List
 
 ## 6. Data Article
 
