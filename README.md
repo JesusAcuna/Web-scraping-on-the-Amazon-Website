@@ -349,7 +349,112 @@ The code is similar to the second part of the point 8. Table1 information, but t
 In this part I'm going to extract information such as title, price and table information from three tables are on the page of a product or article. The picture below is the first Table, and sometimes there is a expander prompt, it's necessary click on that expander to reveal the information.
 </p>
 
-## 10. References
+<p align="center">
+  <img src="https://github.com/JesusAcuna/Web-scraping-on-the-Amazon-Website/blob/main/images/image_3.jpg">
+</p>
+
+1. 
+
+- In the first for loop, I set the number of pages, and skip the first page since we are on that page.
+- Then I got the number of articles with the function "NumberofArticles()". See point 5. Number or articles
+
+2. 
+
+- The while loop will move through all products on a specific page
+- All the products on a specific page start with a XPATH: //[@id="search"]/div[1]/div[1]/div/span[3]/div[2]/div[2+i], also there are two XPATHS that the products have.
+- Then I got the article title with the function "Title()". See point 6. Article title
+- Then I got the article price with the function "Price()". See point 7. Article price
+- Then I got the Table1 information with the function "Table1()". See point 8. Table1 information, and so on with the Table2 and Table3
+
+3. 
+
+- The information of the tables are integrated in one
+
+      #List of product titles and prices 
+      TitleList=[]
+      PriceList=[]
+      #List of product table features
+      FeaturesList=[]
+      ValuesList=[] 
+      #Total number of articles
+      TotalNumberofArticles=0 
+      numberofpages=1  #BORRAR
+      for j in range(int(numberofpages)):
+          if j>0:
+              driver.get(url+'/s?k='+articlename+'&page='+str(j+1))
+          #Go to point 5. Number or articles 
+          numberofarticles=NumberofArticles()
+          numberofarticles=4  #BORRAR
+          print("Number of articles on page: ",j+1,"is equal to: ",numberofarticles)
+          counter=0                                    #article number counter
+          i=0                                          #iterator to increment XPATH
+          TotalNumberofArticles+=numberofarticles
+          #Second part
+          while (counter<numberofarticles):
+              try:         
+                  WebDriverWait(driver,3).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="search"]/div[1]/div[1]/div/span[3]/div[2]/div['+str(2+i)+']/div/div/div/div/div/div/div/div[2]/div/div/div[1]/h2/a/span'))).click()
+              except TimeoutException:
+                  try:                            
+                      WebDriverWait(driver,3).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="search"]/div[1]/div[1]/div/span[3]/div[2]/div['+str(2+i)+']/div/div/div/div/div/div[2]/div/div/div[1]/h2/a/span'))).click()                
+                  except TimeoutException:  
+                      i+=1                        
+                      continue                    
+              #********** Get article titles **********#Go to point 6. Article title
+              TitleList.append(Title())
+              #********** Get article prices **********#Go to point 7. Article price
+              PriceList.append(Price())
+              #******** Get Table1 information ********#Go to point  8. Table1 Information
+              FeatureTable1List,ValueTable1List=Table1()
+              #******** Get Table2 information ********#Go to point  9. Table2 Information
+              FeatureTable2List,ValueTable2List=Table2()
+              #******** Get Table3 information ********#Go to point  10. Table3 Information
+              FeatureTable3List,ValueTable3List=Table3()
+              #Third part
+              #**************************  Get Table information ************************#
+              FeatureTableList=FeatureTable1List+FeatureTable2List+FeatureTable3List
+              ValueTableList=ValueTable1List+ValueTable2List+ValueTable3List
+              #**************************************************************************#
+              i+=1                                
+              counter+=1                          
+              print("***************************************************************")
+              print("Product #",counter,"Page #",j+1) 
+              print("Feature length of tables: ",len(FeatureTableList)) 
+              print("Value length of tables: ",len(ValueTableList))
+              #Fourth Part
+              FeaturesList.append(FeatureTableList)
+              ValuesList.append(ValueTableList)
+              driver.back()                          #return to the previous page
+      driver.quit()
+
+## 7. Get Dataframe
+
+    import pandas as pd
+
+    DataArticle={}
+    DataArticle['Price']=PriceList
+    DataArticle['Title']=TitleList
+    FeaturesSet=set()
+    for l in range(TotalNumberofArticles):
+        FeaturesSet=FeaturesSet | set(FeaturesList[l])
+    for m in FeaturesSet:
+        List=[]
+        for n in range(TotalNumberofArticles):
+            if(m in set(FeaturesList[n])):
+                Index=FeaturesList[n].index(m)
+                List.append(ValuesList[n][Index])
+            else:
+                List.append('')
+        DataArticle[m]=List
+    #Construction of the data frame
+    columnsDF=['Title','Price']
+    for i in FeaturesSet:
+        columnsDF.append(i)
+    df=pd.DataFrame(DataArticle,columns=columnsDF)
+    print("***************************************************************")
+    df
+    df.to_csv('ArticleData.csv')
+
+## 8. References
 
   - Web
   
